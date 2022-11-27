@@ -93,7 +93,7 @@ python dns_query.py -o <file-path>
 185.199.109.133 raw.github.com
 185.199.110.133 raw.github.com
 185.199.111.133 raw.github.com
-Update at 2022-11-27 17:22:46
+# Update at 2022-11-27 17:22:46
 # === Github DNS End ===
 
 ```
