@@ -64,7 +64,7 @@ class DNSQuery:
         from pattern import UPDATE_PATTERN
 
         if '=== Github DNS Start ===' in content:
-            UPDATE_PATTERN.sub(self._hosts_content, content)
+            content = UPDATE_PATTERN.sub(self._hosts_content, content)
         else:
             content += '\n\n' + self._hosts_content + '\n\n'
                 
