@@ -1,5 +1,5 @@
 # github-hosts
-A python tool that get github related ip address
+A python tool that gets github related ip addresses.
 
 # Usage
 
