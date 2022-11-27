@@ -4,6 +4,7 @@ from loader import name_loader
 from failure import failure_handler
 from sys import platform
 import argparse
+from datetime import datetime
 
 
 class DNSQuery:
@@ -26,6 +27,7 @@ class DNSQuery:
             except AttributeError:
                     failure_handler(hostname, r)
 
+        self._hosts_content += f'Update at {datetime.now().strftime("%F %T")}\n'
         self._hosts_content += '# === Github DNS End === '
 
 
