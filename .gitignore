@@ -3,3 +3,4 @@
 !*.yaml
 !.gitignore
 !Dockerfile
+!REAME.md
