@@ -28,7 +28,7 @@ class DNSQuery:
             except AttributeError:
                     failure_handler(hostname, r)
 
-        self._hosts_content += f'Update at {datetime.now().strftime("%F %T")}\n'
+        self._hosts_content += f'# Update at {datetime.now().strftime("%F %T")}\n'
         self._hosts_content += '# === Github DNS End === '
 
 
