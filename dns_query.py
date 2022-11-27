@@ -47,7 +47,7 @@ class DNSQuery:
         elif platform == 'linux':
             hosts_path = '/etc/hosts'
 
-        bak = os.path.join(os.path.dirname(hosts_path), 'hosts_copy.bak_bef_upd')
+        bak = os.path.join(os.path.dirname(hosts_path), 'hosts.bak_bef_upd')
         if not os.path.isfile(bak):
             shutil.copy(hosts_path, bak)
             
