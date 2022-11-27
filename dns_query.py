@@ -43,7 +43,7 @@ class DNSQuery:
         import shutil
 
         if platform == 'win32':
-            hosts_path = r'C:\Windows\System32\drivers\etc\hosts_copy'
+            hosts_path = r'C:\Windows\System32\drivers\etc\hosts'
         elif platform == 'linux':
             hosts_path = '/etc/hosts'
 
