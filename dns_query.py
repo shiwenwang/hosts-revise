@@ -12,6 +12,7 @@ class DNSQuery:
         self._hosts_content = '# === Github DNS Start === \n'
 
     def query(self):
+        print('Query...')
         for hostname in name_loader.hostnames:
             r = requests.get(name_loader.source + hostname)
             m = DOMIN_PATTERN.search(r.text)
