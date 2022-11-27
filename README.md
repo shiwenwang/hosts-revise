@@ -3,7 +3,7 @@ A python tool that gets github related ip addresses.
 
 # Usage
 
-## Get all host name and ip address mapping to stdout
+## Get hostname and ipv4 address pairs to stdout
 ```shell
 python dns_query.py
 ```
@@ -15,7 +15,7 @@ python dns_query.py
 python dns_query.py -u
 ```
 
-## Save host name and ip address mapping to a file
+## Save hostname and ipv4 address pairs to a file
 
 ```shell
 python dns_query.py -o <file-path>
