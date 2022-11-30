@@ -92,7 +92,7 @@ class Launcher:
     
     @property
     def update_hosts(self):
-        return self._args.update is not None
+        return self._args.update
 
     @property
     def output(self):
