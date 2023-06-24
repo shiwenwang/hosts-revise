@@ -2,6 +2,7 @@ import requests
 import logging
 from logging.handlers import RotatingFileHandler
 from sys import platform
+from datetime import datetime
 import re
 
 from define import API, DOMAINS, HOSTS_PATTERN
@@ -34,6 +35,7 @@ def query():
     return hosts_lines
 
 def _new_hosts(lines):
+    lines.append(f'updated at {datetime.now()}')
     data = '\n'.join(lines)
     return f"# custom from ip-api start\n{data}\n# custom from ip-api end\n"
 
