@@ -11,7 +11,7 @@ from logger import logger
 class Query:
     def __init__(self, update) -> None:
         self._update_hosts = update
-        self._dns_results = []
+        self._dns_results = {}
 
     def query(self):
         threads = []
@@ -35,7 +35,7 @@ class Query:
         result = r.json()
         ip, company = result['query'], result['as']
         logger.info(f'{domain} {ip} {company}')
-        self._dns_results.append(f'{ip} {domain}')
+        self._dns_results[domain] = ip
 
     def _update(self):
         if sys.platform == 'win32':
@@ -60,6 +60,7 @@ class Query:
         logger.info(f'\nUpdate done at {datetime.now()}.')
     
     def _new_hosts_content(self):
-        self._dns_results.append(f'updated at {datetime.now()}')
-        data = '\n'.join(self._dns_results)
+        lines = [f'{self._dns_results[domain]} {domain}' for domain in DOMAINS]
+        lines.append(f'updated at {datetime.now()}')
+        data = '\n'.join(lines)
         return f"# custom from ip-api start\n{data}\n# custom from ip-api end"
