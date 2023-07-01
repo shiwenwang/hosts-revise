@@ -1,8 +1,5 @@
-import query
+from query import Query
 import sys
 
-lines = query.query()
-print('\n'.join(lines))
-
-if len(sys.argv) > 1 and sys.argv[1] == '-u':
-    query.update_hosts(lines)
+update_hosts =  len(sys.argv) > 1 and sys.argv[1] == '-u'
+Query(update_hosts).query()

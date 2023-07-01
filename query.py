@@ -1,63 +1,65 @@
 import requests
-import logging
-from logging.handlers import RotatingFileHandler
-from sys import platform
 from datetime import datetime
 import re
+import sys
+from threading import Thread 
 
-from define import API, DOMAINS, HOSTS_PATTERN
-
-logger = logging.getLogger('ip_query')
-fh = RotatingFileHandler('hosts.log', maxBytes=1024 * 1024, backupCount=1)
-fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
-logger.addHandler(fh)
-logger.setLevel(logging.INFO)
+from define import API, REQUEST_TIMEOUT, DOMAINS, HOSTS_PATTERN
+from logger import logger
 
 
-def query():
-    hosts_lines = []
-    for domain in DOMAINS:
-        url = API + domain
+class Query:
+    def __init__(self, update) -> None:
+        self._update_hosts = update
+        self._dns_results = []
 
-        r = requests.get(url)
+    def query(self):
+        threads = []
+        for domain in DOMAINS:
+            threads.append(Thread(target=self.http_get, args=(domain, )))
+
+        for t in threads:
+             t.start()
+        for t in threads:
+             t.join()
+
+        if self._update_hosts:
+            self._update()
+
+    def http_get(self, domain):
+        r = requests.get(API + domain, timeout=REQUEST_TIMEOUT)
         if r.status_code != 200:
             logger.error(f'query {domain} failed, status: {r.status_code}')
+            return
         
-        try:
-            line = f'{r.json()["query"]} {domain}'
-            logger.info(line)
-            hosts_lines.append(line)
-        except (UnicodeDecodeError, requests.exceptions.JSONDecodeError):
-            logging.error('{domain} ip decode error')
-        except KeyError as e:
-            logging.error('{domain} ip : {e}')
+        result = r.json()
+        ip, company = result['query'], result['as']
+        logger.info(f'{domain} {ip} {company}')
+        self._dns_results.append(f'{ip} {domain}')
 
-    return hosts_lines
+    def _update(self):
+        if sys.platform == 'win32':
+            hosts_path = r'C:\Windows\System32\drivers\etc\hosts'
+        elif sys.platform == 'linux':
+            hosts_path = '/etc/hosts'
 
-def _new_hosts(lines):
-    lines.append(f'updated at {datetime.now()}')
-    data = '\n'.join(lines)
-    return f"# custom from ip-api start\n{data}\n# custom from ip-api end\n"
+        with open(hosts_path, 'r', encoding='utf-8') as f_in:
+            origin = f_in.read()
+        
+        filemode = 'w'
+        new_data = self._new_hosts_content()
+        if '# custom from ip-api' not in origin:
+            filemode = 'a+'
+            new_data = '\n' + new_data
+        else: 
+            new_data = re.sub(HOSTS_PATTERN, new_data, origin, flags=re.DOTALL)
+        
+        with open(hosts_path, filemode, encoding='utf-8') as f_out:
+            f_out.write(new_data)
 
-def update_hosts(lines):
-    """modify local hosts file
-    """
-
-    if platform == 'win32':
-        hosts_path = r'C:\Windows\System32\drivers\etc\hosts'
-    elif platform == 'linux':
-        hosts_path = '/etc/hosts'
-
-    with open(hosts_path, 'r', encoding='utf-8') as f_in:
-        origin = f_in.read()
+        logger.info(f'\nUpdate done at {datetime.now()}.')
     
-    filemode = 'w'
-    new_data = _new_hosts(lines)
-    if '# custom from ip-api' not in origin:
-        filemode = 'a+'
-        new_data = '\n' + new_data
-    else: 
-        new_data = re.sub(HOSTS_PATTERN, new_data, origin, flags=re.DOTALL)
-    
-    with open(hosts_path, filemode, encoding='utf-8') as f_out:
-        f_out.write(new_data)
+    def _new_hosts_content(self):
+        self._dns_results.append(f'updated at {datetime.now()}')
+        data = '\n'.join(self._dns_results)
+        return f"# custom from ip-api start\n{data}\n# custom from ip-api end"
