@@ -1,4 +1,4 @@
-# github-hosts
+# hosts-revise
 
 A very simple tool to query the real IP addresses of domains which polluted by DNS cache poisoning.
 
