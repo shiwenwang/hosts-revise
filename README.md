@@ -1,6 +1,6 @@
 # github-hosts
 
-A very simple tool to query github ip addresses.
+A very simple tool to query the real IP addresses of domains which polluted by DNS cache poisoning.
 
 
 # Usage
