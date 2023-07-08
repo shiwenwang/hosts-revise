@@ -20,7 +20,7 @@ DOMAINS = [
     'githubstatus.com',
     'github.community',
     'raw.github.com',
-    
+
     # python
     'docs.python.org',
     'python.org',
